@@ -1,4 +1,5 @@
 var http = require('http');
+var fs = require('fs');
 
 var API = {};
 
@@ -58,11 +59,39 @@ API.getGames = function(key, id, callback) {
 
 //Retrieve a JSON that allows us to associate names and appids
 API.getNames = function(key, games, callback) {
-  var url = "http://api.steampowered.com/ISteamApps/GetAppList/v2"
+  var url = "http://api.steampowered.com/ISteamApps/GetAppList/v2";
+  var today = new Date();
   try {
-    this.callURL(url, function(data) {
-      data = JSON.parse(data);
-      callback(data);
+    //Downloads the AppList file it it doesn't exsit locally or if it hasn't been updated today
+    fs.stat("AppList.json", function(err, stats) {
+      if(err != null) {
+        console.log("Past errcheck");
+        API.callURL(url, function(data) {
+          console.log("Past callURL");
+          fs.writeFileSync('AppList.json', data, 'utf8');
+          fs.readFile('AppList.json', function(err, data) {
+            data = JSON.parse(data);
+            callback(data);
+          });
+        });
+      }
+      else if(stats.mtime.getDate() != today.getDate() &&
+        stats.mtime.getMonth() != today.getMonth() &&
+        stats.mtime.getFullYear() != today.getFullYear()) {
+          API.callURL(url, function(data) {
+            fs.writeFileSync('AppList.json', data, 'utf8');
+            fs.readFile('AppList.json', function(err, data) {
+              data = JSON.parse(data);
+              callback(data);
+            });
+          });
+      }
+      else {
+        fs.readFile('AppList.json', function(err, data) {
+          data = JSON.parse(data);
+          callback(data);
+        });
+      }
     });
   }
   catch (err) {
