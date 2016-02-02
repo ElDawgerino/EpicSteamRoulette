@@ -76,7 +76,9 @@ API.createArray = function(games, map, callback) {
   for(var i = 0; i < games.response.games.length; i++) {
     for(var j = 0; j < map.applist.apps.length; j++) {
       if (games.response.games[i].appid == map.applist.apps[j].appid) {
-        names.push(map.applist.apps[j].name);
+        names.push({
+          name: map.applist.apps[j].name
+        });
       }
     }
   }

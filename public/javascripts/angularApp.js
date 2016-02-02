@@ -4,7 +4,7 @@ var app = angular.module('EpicSteamRoulette', []);
 app.controller('HomeCtrl', [
 '$scope',
 function($scope){
-  $scope.name = ""
+  $scope.name = "";
 
   $scope.$watch("name", function(newVal, oldVal) {
     $scope.target = "/roulette/" + $scope.name;
@@ -14,8 +14,6 @@ function($scope){
 app.controller('RouletteCtrl', [
   '$scope',
   function($scope){
-    $scope.mySplit = function(string, nb) {
-      return string.split(",", nb);
-    }
+
   }
 ])

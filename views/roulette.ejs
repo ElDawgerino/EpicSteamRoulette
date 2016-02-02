@@ -6,11 +6,8 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   </head>
   <body ng-app="EpicSteamRoulette" ng-controller="RouletteCtrl" ng-init="games = <%= games %>">
-    <div>
-      {{mysplit(games,0)}}
-    </div>
-    <div ng-repeat="game in games">
-      {{game}}
+    <div ng-repeat="game in games.names">
+      {{game.name}}
     </div>
   </body>
 </html>
