@@ -13,7 +13,11 @@ function($scope){
 
 app.controller('RouletteCtrl', [
   '$scope',
-  function($scope){
-
+  '$window',
+  function($scope, $window){
+    $scope.pickGame = function() {
+      var pick = Math.floor(Math.random() * $scope.games.names.length);
+      $window.alert($scope.games.names[pick].name);
+    }
   }
 ])
