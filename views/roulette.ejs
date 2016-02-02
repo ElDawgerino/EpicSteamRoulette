@@ -8,11 +8,13 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   </head>
   <body ng-app="EpicSteamRoulette" ng-controller="RouletteCtrl" ng-init="games = <%= games %>">
-    <div>
-      <button ng-click="pickGame()">Pick a game!</button>
-    </div>
-    <div ng-repeat="game in games.names">
-      {{game.name}}
+    <div class="container-fluid">
+      <div class="row">
+        <button class="btn btn-primary" ng-click="pickGame()">Pick a game!</button>
+      </div>
+      <div ng-repeat="game in games.names" class="row">
+        {{game.name}}
+      </div>
     </div>
   </body>
 </html>
