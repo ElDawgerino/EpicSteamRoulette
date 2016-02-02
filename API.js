@@ -57,6 +57,61 @@ API.getGames = function(key, id, callback) {
   }
 }
 
+API.createArray = function(key, namesMap, games, id, callback) {
+  var gameArray = [];
+
+  for(var i = 0; i<games.response.games.length; i++) {
+    var playtime = games.response.games[i].playtime_forever;
+    //associate the name with the ID
+    for(var j = 0; j < namesMap.applist.apps.length; j++) {
+      if (games.response.games[i].appid == namesMap.applist.apps[j].appid) {
+          var name = namesMap.applist.apps[j].name;
+      }
+    }
+
+    gameArray.push({name : name, totalPlaytime : playtime});
+  }
+
+  callback(gameArray);
+}
+
+//add achievements progress to the objects
+API.addProgress = function(key, games, id, gameArray, callback){
+  var pushed = 0;
+  for(var i = 0; i<gameArray.length; i++){
+    var url = "http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid="+games.response.games[i].appid+"&key="+ key +"&steamid=" +id;
+    this.callURL(url, function(data){
+      data = JSON.parse(data);
+      console.log(pushed);
+      if(data.playerstats.hasOwnProperty("achievements")) {
+        //Retrieves the achievement percentage
+        var successCount = 0;
+        var failureCount = 0;
+        for(var j = 0; j<data.playerstats.achievements.length; j++) {
+          if(data.playerstats.achievements[j].achieved == 1) {
+            successCount++;
+          }
+          else {
+            failureCount++
+          }
+        }
+        var totalProgress = (successCount)/(failureCount+successCount) * 100;
+
+        gameArray[pushed].progress = totalProgress;
+        pushed++;
+      }
+      else{
+        gameArray[pushed].progress = "No achievements";
+        pushed++;
+      }
+
+      if(pushed == games.response.games.length){
+        callback(gameArray);
+      }
+    });
+  }
+}
+
 //Retrieve a JSON that allows us to associate names and appids
 API.getNames = function(key, games, callback) {
   var url = "http://api.steampowered.com/ISteamApps/GetAppList/v2";
@@ -65,9 +120,7 @@ API.getNames = function(key, games, callback) {
     //Downloads the AppList file it it doesn't exsit locally or if it hasn't been updated today
     fs.stat("AppList.json", function(err, stats) {
       if(err != null) {
-        console.log("Past errcheck");
         API.callURL(url, function(data) {
-          console.log("Past callURL");
           fs.writeFileSync('AppList.json', data, 'utf8');
           fs.readFile('AppList.json', function(err, data) {
             data = JSON.parse(data);
@@ -97,21 +150,6 @@ API.getNames = function(key, games, callback) {
   catch (err) {
     throw err;
   }
-}
-
-//Generates an array containing the names of the games owned by the user
-API.createArray = function(games, map, callback) {
-  var names = [];
-  for(var i = 0; i < games.response.games.length; i++) {
-    for(var j = 0; j < map.applist.apps.length; j++) {
-      if (games.response.games[i].appid == map.applist.apps[j].appid) {
-        names.push({
-          name: map.applist.apps[j].name
-        });
-      }
-    }
-  }
-  callback(names);
 }
 
 module.exports = API;

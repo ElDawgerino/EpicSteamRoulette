@@ -13,17 +13,20 @@ router.get('/:username', function(req, res, next) {
   var config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 
   try {
-
     //getting the account ID
     api.getID(config.key, req.params.username, function(id) {
       //getting the games owned by the account
       api.getGames(config.key, id, function(games) {
-        //retrieving the game names
-        api.getNames(config.key, games, function(namesMap) {
-          //finding the names that concerns us
-          api.createArray(games, namesMap, function(names) {
-            var obj = JSON.stringify({names : names});
-            res.render('roulette', {username : req.params.username, games: obj});
+        //associate the name to the appid
+        api.getNames(config.key, id, function(namesMap) {
+          //generating a JSON containing the game names
+          api.createArray(config.key, namesMap, games, id, function(gameArray){
+            //adding the achivement progress to gameArray
+            api.addProgress(config.key, games, id, gameArray, function(gameArray) {
+              var obj = JSON.stringify({gameArray : gameArray});
+              //rendering the page
+              res.render('roulette', {username : req.params.username, games: obj});
+            });
           });
         });
       });
