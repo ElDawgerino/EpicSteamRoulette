@@ -12,7 +12,7 @@
         <button class="btn btn-primary" ng-click="pickGame()">Pick a game!</button>
       </div>
       <div ng-repeat="game in games.gameArray" class="row">
-        {{game.name}} {{game.progress | number:1}} {{game.totalPlaytime / 60 | number:1}}h
+        {{game.name}} {{game.progress}} {{game.totalPlaytime / 60 | number:1}}h
       </div>
     </div>
   </body>

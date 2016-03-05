@@ -22,7 +22,7 @@ router.get('/:username', function(req, res, next) {
           //generating a JSON containing the game names
           api.createArray(config.key, namesMap, games, id, function(gameArray){
             //adding the achivement progress to gameArray
-            api.addProgress(config.key, games, id, gameArray, function(gameArray) {
+            api.addProgress(config.key, id, gameArray, function(gameArray) {
               var obj = JSON.stringify({gameArray : gameArray});
               //rendering the page
               res.render('roulette', {username : req.params.username, games: obj});

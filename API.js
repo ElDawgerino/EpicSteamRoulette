@@ -62,6 +62,7 @@ API.createArray = function(key, namesMap, games, id, callback) {
 
   for(var i = 0; i<games.response.games.length; i++) {
     var playtime = games.response.games[i].playtime_forever;
+    var appid = games.response.games[i].appid
     //associate the name with the ID
     for(var j = 0; j < namesMap.applist.apps.length; j++) {
       if (games.response.games[i].appid == namesMap.applist.apps[j].appid) {
@@ -69,20 +70,24 @@ API.createArray = function(key, namesMap, games, id, callback) {
       }
     }
 
-    gameArray.push({name : name, totalPlaytime : playtime});
+    gameArray.push({name : name, totalPlaytime : playtime, id : appid});
   }
 
   callback(gameArray);
 }
 
-//add achievements progress to the objects
-API.addProgress = function(key, games, id, gameArray, callback){
+//add achievements progress to the gameArray
+API.addProgress = function(key, id, gameArray, callback){
   var pushed = 0;
-  for(var i = 0; i<gameArray.length; i++){
-    var url = "http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid="+games.response.games[i].appid+"&key="+ key +"&steamid=" +id;
+  var gameArray = gameArray;
+  var i = 0;
+
+  while (i<gameArray.length){
+    var url = "http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid="+gameArray[i].appid+"&key="+ key +"&steamid=" +id;
+    console.log(url)
     this.callURL(url, function(data){
+      console.log(data);
       data = JSON.parse(data);
-      console.log(pushed);
       if(data.playerstats.hasOwnProperty("achievements")) {
         //Retrieves the achievement percentage
         var successCount = 0;
@@ -105,10 +110,11 @@ API.addProgress = function(key, games, id, gameArray, callback){
         pushed++;
       }
 
-      if(pushed == games.response.games.length){
+      if(pushed == gameArray.length){
         callback(gameArray);
       }
     });
+    i++;
   }
 }
 
