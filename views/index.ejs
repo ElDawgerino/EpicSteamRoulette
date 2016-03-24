@@ -1,22 +1,32 @@
-<html>
+<!DOCTYPE HTML>
+<html ng-app="EpicSteamRoulette">
   <head>
     <title>Epic Steam Roulette</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.18/angular-ui-router.min.js"></script>
     <script src="/javascripts/angularApp.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   </head>
-  <body ng-app="EpicSteamRoulette" ng-controller="HomeCtrl">
+  <body ng-controller="HomeCtrl">
     <div class="container-fluid">
+      <ui-view></ui-view>
+    </div>
+
+    <script type="text/ng-template" id="home.html">
       <div class="row">
-        <form action={{target}} method="get" class="form-inline">
+        <form  class="form-inline">
           <div class="form-group">
-            <input type=text ng-model="name" class="form-control">
-            <input type="submit" value="OK" class="btn btn-primary">
+            <input type="text" ng-model="name" class="form-control">
+            <button class="btn btn-primary" ng-click="getID()">Ok</button>
           </div>
         </form>
       </div>
-    </div>
-    </div>
+    </script>
+
+    <script type="text/ng-template" id="roulette.html">
+      {{test}}
+      {{id}}
+    </script>
+
   </body>
 </html>

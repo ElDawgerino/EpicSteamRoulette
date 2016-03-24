@@ -1,22 +1,44 @@
-var app = angular.module('EpicSteamRoulette', []);
+var app = angular.module('EpicSteamRoulette', ['ui.router']);
 
-//Allows you to get to the correct page when typing your name into home
+app.config([
+  '$stateProvider',
+  '$urlRouterProvider',
+  function($stateProvider, $urlRouterProvider){
+      $stateProvider.state('home', {
+        url: '/home',
+        templateUrl: 'home.html',
+        controller: 'HomeCtrl'
+      });
+
+      $stateProvider.state('roulette', {
+        url: '/roulette/{id}',
+        templateUrl: 'roulette.html',
+        controller: 'RouletteCtrl'
+      });
+
+      $urlRouterProvider.otherwise('home');
+}]);
+
 app.controller('HomeCtrl', [
 '$scope',
-function($scope){
+'$http',
+'$state',
+function($scope, $http, $state){
   $scope.name = "";
+  $scope.id = "";
 
-  $scope.$watch("name", function(newVal, oldVal) {
-    $scope.target = "/roulette/" + $scope.name;
-  });
+  $scope.getID = function(){
+    $http.get('/getid/' + $scope.name).then(function(response){
+      $state.go('roulette', {id : respone.data.id}, {});
+    });
+  };
 }]);
 
 app.controller('RouletteCtrl', [
   '$scope',
-  '$window',
-  function($scope, $window){
-    $scope.pickGame = function() {
-      var pick = Math.floor(Math.random() * $scope.games.gameArray.length);
-      $window.alert($scope.games.gameArray[pick].name);
-    };
-}]);
+  '$stateParams',
+  function($scope, $stateParams){
+    $scope.test = "test";
+    $scope.id = $stateParams.id;
+  }
+]);

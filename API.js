@@ -18,7 +18,7 @@ API.callURL = function(url, callback) {
 
   }).on('error', function(e){
     console.log("Couldn't connect to the steam API.");
-    throw "Couldn't connect to the steam API.";
+    throw new err("Couldn't connect to the steam API.");
   });
 }
 
@@ -34,7 +34,7 @@ API.getID = function(key, username, callback) {
       }
       else {
         console.log("Couldn't find steam ID for this username");
-        throw "Couldn't find steam ID for this username";
+        throw new err("Couldn't find steam ID for this username");
       }
     });
   }
